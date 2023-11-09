@@ -79,7 +79,6 @@ def notes():
             t_time = time.strftime('%Y-%m-%d %H:%M:%S')
             t_random = random.randrange(1000000000, 9999999999)
 
-            print(statement)
             c.execute(statement, (user_id, note, t_time, t_random))
             db.commit()
             db.close()
@@ -102,10 +101,8 @@ def notes():
     db = connect_db()
     c = db.cursor()
     statement = "SELECT * FROM notes WHERE assocUser = ?;"
-    print(statement)
     c.execute(statement, (session['userid'],))
     notes = c.fetchall()
-    print(notes)
     
     return render_template('notes.html',notes=notes,importerror=importerror)
 
@@ -117,9 +114,8 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        print (password)
         if (password == "' or 1 = 1 --" or password == "password"):
-            error = "You clowning fool 🫵🤡"
+            error = "You clowning, fool 🫵🤡"
             return render_template('login.html',error=error)
 
         db = connect_db()
@@ -153,14 +149,11 @@ def register():
         c = db.cursor()
         pass_statement = """SELECT * FROM users WHERE password = ?;"""
         user_statement = """SELECT * FROM users WHERE username = ?;"""
-        print('!!!!!!!!!!!!!!!!!!!!!!')
-        print(pass_statement, password)
         c.execute(pass_statement, (password,))
         if(len(c.fetchall())>0):
             errored = True
             passworderror = "That password is already in use by someone else!"
-        print('---')
-        print(user_statement, username)
+
         c.execute(user_statement, (username,))
         if(len(c.fetchall())>0):
             errored = True
@@ -168,7 +161,6 @@ def register():
 
         if(not errored):
             statement = """INSERT INTO users(id,username,password) VALUES(null,?,?);"""
-            print(statement)
             c.execute(statement, (username,password))
             db.commit()
             db.close()
