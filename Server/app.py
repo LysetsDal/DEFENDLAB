@@ -148,16 +148,19 @@ def register():
         db = connect_db()
         c = db.cursor()
         pass_statement = """SELECT * FROM users WHERE password = ?;"""
-        user_statement = """SELECT * FROM users WHERE username = ?;"""
+        user_statement = """SELECT * FROM users WHERE username = '%s';""" %username
         c.execute(pass_statement, (password,))
         if(len(c.fetchall())>0):
             errored = True
             passworderror = "That password is already in use by someone else!"
 
-        c.execute(user_statement, (username,))
-        if(len(c.fetchall())>0):
+        c.execute(user_statement)
+        fetch_all = c.fetchall()
+        print(fetch_all)
+        if(len(fetch_all)>0):
+            username_match = [user[1] for user in fetch_all]
             errored = True
-            usererror = "That username is already in use by someone else!"
+            usererror = "The username: \"" + ' '.join(map(str, username_match)) + "\" is already in use by someone else!"
 
         if(not errored):
             statement = """INSERT INTO users(id,username,password) VALUES(null,?,?);"""
